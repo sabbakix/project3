@@ -1,3 +1,7 @@
+"""
+
+"""
+
 from random import randint, shuffle
 
 
@@ -44,3 +48,14 @@ class Card:
     def getCard(self):
         return self.valuename+" "+self.suitsymbol
 
+
+
+class Deck(Card):
+    def __init__(self):
+        self.suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+        Card.__init__(self,1,"Hearts")
+        self.listofcards = []
+        for suit in self.suits:
+            for i in range(1,13):
+                x = Card(i, suit)
+                self.listofcards.append(x)
