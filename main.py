@@ -59,3 +59,29 @@ class Deck(Card):
             for i in range(1,13):
                 x = Card(i, suit)
                 self.listofcards.append(x)
+
+    def __str__(self):
+        deckstr = ""
+        for card in self.listofcards:
+            deckstr += " ["+str(card.getCard())+"] " 
+        return deckstr
+    
+    def shuffle(self):
+        shuffle(self.listofcards)
+
+    def pop(self):
+        return self.listofcards.pop()
+
+class Player:
+    def __init__(self, name = "", hand = []):
+        self.name = name
+        self.hand = []
+    
+    def getName(self):
+        return self.name
+
+
+deck1 = Deck()
+print(deck1)
+deck1.shuffle()
+print(deck1.pop())
