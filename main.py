@@ -169,9 +169,8 @@ class Player:
                 else:
                     break
 
-
-
-
+    def shuffle(self):
+        shuffle(self.hand)
 
 
 def getInput(printString):
@@ -205,18 +204,22 @@ def getInput(printString):
     
 print(chr(27)+"[2J") # Clear screen
 
+# Create the deck of cards
 deck1 = Deck()
 #print(deck1)
-#deck1.shuffle()
+deck1.shuffle()
+#print(deck1)
 
 
+# Ask how many players and the 
+# create an istance for each player and add it to the players list
 n_players = int(getInput("\nInsert the number of players: "))
 players = []
-# Create an istance for each player and add it to the players list
 for i in range(n_players):
     player_name = getInput("Insert the name for player "+str(i+1)+": ")
     player = Player(player_name)
     players.append(player)
+
 
 # Distribute the cards to players
 while(deck1.hasCards()):
@@ -246,8 +249,10 @@ previous_player = players[n_players-1]
 i = 0
 while(True):
     print(chr(27)+"[2J") # Clear screen
-    # Diplay all players hands
+
+    # Shuffle and diplay all players hands
     for player in players:
+        player.shuffle()
         if player.name == players[i].name:
             print(player)
         else:
@@ -260,25 +265,16 @@ while(True):
 
     print("")
     print(" Hello "+ players[i].name+" is your turn.")
-    #print(" Your hand is :"+players[i].printHand()+"\n")
-
-    #print(" "+previous_player.printHiddenCards()+"\n")
     picked = getInput(" Pick a card from "+previous_player.name+
         ". Type a number from 1 to "+str(int(len(previous_player.hand)))+": ")
-    try:
-        picked = int(picked)-1
+    picked = int(picked)-1
 
-    except:
-        picked = int(getInput(" Pick a card from "+previous_player.name+
-        ". Type a number from 1 to "+str(int(len(previous_player.hand)))+
-        ". Please insert a valid number: "))-1
-
-    #remove the card from previous player and add it to me
+    #remove the card from previous player and add it to the current player
     picked_card = previous_player.getCard(picked)
     players[i].add(picked_card)
-
-
     print("\n You picked: ["+str(picked_card)+"]")
+
+
     #check if you have pairs and remove them
     n1_cards = len(players[i].hand)
     players[i].removePairs()
