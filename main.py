@@ -1,5 +1,5 @@
 """
-
+The Old Maid - Card Game
 """
 
 from random import randint, shuffle
@@ -172,6 +172,12 @@ class Player:
     def shuffle(self):
         shuffle(self.hand)
 
+    def hasCards(self):
+        if len(self.hand) > 0:
+            return True
+        else:
+            return False
+
 
 def getInput(printString):
     inputvalue = input(printString)
@@ -213,7 +219,7 @@ deck1.shuffle()
 
 # Ask how many players and the 
 # create an istance for each player and add it to the players list
-n_players = int(getInput("\nInsert the number of players: "))
+n_players = int(getInput("\nInsert the number of players (from 2 to 26): "))
 players = []
 for i in range(n_players):
     player_name = getInput("Insert the name for player "+str(i+1)+": ")
@@ -250,18 +256,35 @@ i = 0
 while(True):
     print(chr(27)+"[2J") # Clear screen
 
+
+    # Check if Game over
+    ncards_in_play = 0
+    game_over = False
+    for player in players:
+        if player.hasCards():
+            ncards_in_play += 1
+    if ncards_in_play == 1:
+        game_over = True
+
+
     # Shuffle and diplay all players hands
     for player in players:
-        player.shuffle()
-        if player.name == players[i].name:
-            print(player)
+        if player.hasCards():
+            if game_over:
+                print("Sorry "+player.name+". You lost! \t["+str(player.hand[0])+"]")
+            else:
+                player.shuffle()
+                if player.name == players[i].name:
+                    print(player)
+                else:
+                    print(player.printHiddenCards())
+                    #print(player)
         else:
-            print(player.printHiddenCards())
-            #print(player)
-
-    if len(players[i].hand) == 1 and players[i].hand[0].valuename == "Q":
-            print("Game Over.\n Sorry "+players[i].name+" You lost.")
-            exit()
+            print(player.name+" has no more cards. Congratulation!" )
+        
+    if game_over:
+        print("\n Game Over! \n")
+        exit()
 
     print("")
     print(" Hello "+ players[i].name+" is your turn.")
@@ -289,9 +312,26 @@ while(True):
     
     print(" Your hand is now :"+players[i].printHand()+"\n")    
 
-    # set counters
-    previous_player = players[i]
-    i += 1
-    if i >= n_players:
-        i = 0
+    # set previous with cards
+    if players[i].hasCards():
+        previous_player = players[i]
+    else:
+        # find the previous player with cards
+        i2 = i
+        while(True):
+            i2 -= 1
+            if players[i2].hasCards():
+                previous_player = players[i2]
+                break
+
+    # next player with cards
+    i2 = i
+    while(True):
+        i2 += 1
+        if i2 >= len(players):
+            i2 = 0
+        if players[i2].hasCards():
+            i = i2
+            break
+
     pause = getInput(" Press ENTER to continue with the next player: "+players[i].name)
